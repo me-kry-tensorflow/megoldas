@@ -3,6 +3,8 @@ from unittest.case import TestCase
 from unittest import mock
 from gradient import calculate_gradient
 
+import unittest
+
 class GradientTest(TestCase):
 
     @mock.patch('gradient.tf.GradientTape')

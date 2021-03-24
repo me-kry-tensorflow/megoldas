@@ -1,6 +1,22 @@
 import tensorflow as tf
 from trainingResults import TrainingResults
 
+TRUE_W = 3.0
+TRUE_B = 2.0
+NUM_EXAMPLES = 1000
+
+
+def generate_data():
+    # A vector of random x values
+    x = tf.random.normal(shape=[NUM_EXAMPLES])
+
+    # Generate some noise
+    noise = tf.random.normal(shape=[NUM_EXAMPLES])
+
+    # Calculate y
+    y = x * TRUE_W + TRUE_B + noise
+    return x, y
+
 
 def loss(target_y, predicted_y):
     return tf.reduce_mean(tf.square(target_y - predicted_y))

@@ -12,6 +12,6 @@ def calculate_gradient():
     return tape.gradient(y, x)
 
 
-if "__name__" == "__main__":
+if __name__ == "__main__":
     dy_dx = calculate_gradient()
     print(dy_dx.numpy())

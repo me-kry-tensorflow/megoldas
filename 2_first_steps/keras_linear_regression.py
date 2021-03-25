@@ -1,5 +1,18 @@
 import tensorflow as tf
 import numpy as np
+import datetime
+import matplotlib.pyplot as plt
+
+
+def plot_loss(history):
+    plt.plot(history.history['loss'], label='loss')
+    plt.plot(history.history['val_loss'], label='val_loss')
+    plt.ylim([0, 10])
+    plt.xlabel('Epoch')
+    plt.ylabel('Error [MPG]')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
 
 
 def get_model():
@@ -9,7 +22,11 @@ def get_model():
     xs = np.array([-1.0,  0.0, 1.0, 2.0, 3.0, 4.0], dtype=float)
     ys = np.array([-3.0, -1.0, 1.0, 3.0, 5.0, 7.0], dtype=float)
 
-    model.fit(xs, ys, epochs=500)
+    log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+
+    history = model.fit(xs, ys, epochs=500, callbacks=[tensorboard_callback], validation_split=0.2)
+    plot_loss(history)
     return model
 
 

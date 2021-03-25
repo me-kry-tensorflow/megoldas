@@ -1,8 +1,9 @@
 import pandas as pd
-import matplotlib.pyplot as plt
+
 import numpy as np
 import tensorflow as tf
 # import seaborn as sns
+import datetime
 
 import tensorflow.keras.layers.experimental.preprocessing as preprocessing
 
@@ -39,9 +40,11 @@ def split_data_train_test(frame, train_size):
     count = frame.shape[0]
     frame.sample(frac=1)
 
-    data_frame_x = frame.drop('price', axis=1)
+    price_field_name = 'MPG'
+
+    data_frame_x = frame.drop(price_field_name, axis=1)
     x = np.array(data_frame_x)
-    data_frame_y = frame['price']
+    data_frame_y = frame[price_field_name]
     y = np.array(data_frame_y)
 
     train_count = int(count * train_size)
@@ -53,101 +56,53 @@ def split_data_train_test(frame, train_size):
 
 
 def linear_regression_one_input(feature, train_labels):
-    horsepower_normalizer = preprocessing.Normalization(input_shape=[1, ])
-    horsepower_normalizer.adapt(feature)
+
+    normalizer = preprocessing.Normalization(input_shape=[1, ])
+    normalizer.adapt(feature)
 
     horsepower_model = tf.keras.Sequential([
-        horsepower_normalizer,
+        normalizer,
         tf.keras.layers.Dense(units=1)
+        # tf.keras.layers.Dense(units=1, input_shape=[1])
     ])
 
     horsepower_model.summary()
 
     horsepower_model.compile(
         optimizer=tf.optimizers.Adam(learning_rate=0.1),
-        loss='mean_absolute_error')
+        loss='mean_absolute_error'
+        # loss='mean_squared_error'
+    )
+
+    log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
     history = horsepower_model.fit(
         feature, train_labels,
         epochs=100,
         # suppress logging
-        verbose=0,
+        verbose=2,
+        callbacks=tensorboard_callback,
         # Calculate validation results on 20% of the training data
         validation_split=0.2)
     return horsepower_model, history
 
 
-def plot_loss(history):
-  plt.plot(history.history['loss'], label='loss')
-  plt.plot(history.history['val_loss'], label='val_loss')
-  plt.ylim([0, 10])
-  plt.xlabel('Epoch')
-  plt.ylabel('Error [MPG]')
-  plt.legend()
-  plt.grid(True)
+def load_data():
+    url = 'http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data'
+    column_names = ['MPG', 'Cylinders', 'Displacement', 'Horsepower', 'Weight',
+                    'Acceleration', 'Model Year', 'Origin']
 
+    data_frame = pd.read_csv(url, names=column_names,
+                              na_values='?', comment='\t',
+                              sep=' ', skipinitialspace=True)
 
+    data_frame['Origin'] = data_frame['Origin'].map({1: 'USA', 2: 'Europe', 3: 'Japan'})
+    dataset = data_frame.dropna()
+    return data_frame  # replace_question_mark(data_frame)
 
 # https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html#selection
 
-data_frame = pd.read_csv('~/.data/Automobile_data.csv')
 
-data_frame = replace_question_mark(data_frame)
-
-train_features, train_labels, test_features, test_labels = split_data_train_test(data_frame, train_size=0.8)
-
-# normalizer = preprocessing.Normalization()
-
-# normalizer.adapt(train_features)
-# print(normalizer.mean.numpy())
-
-hp_index = data_frame.columns.get_loc("horsepower")
-
-horsepower = train_features[:, hp_index]
-horsepower = np.asarray(horsepower).astype(np.float32)
-train_labels_1 = np.asarray(train_labels).astype(np.float32)
-
-horsepower_model, history = linear_regression_one_input(horsepower, train_labels_1)
-
-hist = pd.DataFrame(history.history)
-hist['epoch'] = history.epoch
-hist.tail()
-
-plot_loss(history)
-
-horsepower_model.predict(horsepower[:10])
-
-test_results = {}
-
-horsepower_test = np.asarray(test_features[:, hp_index]).astype(np.float32)
-test_labels_1 = np.asarray(test_labels).astype(np.float32)
-
-test_results['horsepower_model'] = horsepower_model.evaluate(
-    horsepower_test,
-    test_labels_1, verbose=0)
-
-x = tf.linspace(0.0, 250, 251)
-y = horsepower_model.predict(x)
-
-
-def plot_horsepower(x, y):
-#  plt.scatter(train_features['Horsepower'], train_labels, label='Data')
-  plt.plot(x, y, color='k', label='Predictions')
-  plt.xlabel('Horsepower')
-  plt.ylabel('MPG')
-  plt.legend()
-
-
-plot_horsepower(x, y)
-
-data_frame.head()
-data_frame.info()
-plt.figure(figsize=(12, 6))
-data_frame.columns
-# sns.heatmap(data_frame.corr(), annot=True)
-data_frame.isnull().sum()
-
-# plt.figure(figsize=(20,6))
-# sns.countplot(x='fuel-type',data=data)
 
 

@@ -5,8 +5,6 @@ import tensorflow as tf
 # import seaborn as sns
 import datetime
 
-import tensorflow.keras.layers.experimental.preprocessing as preprocessing
-
 
 def replace_question_mark(data):
     df_temp = data[data['normalized-losses'] != '?']
@@ -40,11 +38,9 @@ def split_data_train_test(frame, train_size):
     count = frame.shape[0]
     frame.sample(frac=1)
 
-    price_field_name = 'MPG'
-
-    data_frame_x = frame.drop(price_field_name, axis=1)
+    data_frame_x = frame.drop('price', axis=1)
     x = np.array(data_frame_x)
-    data_frame_y = frame[price_field_name]
+    data_frame_y = frame['price']
     y = np.array(data_frame_y)
 
     train_count = int(count * train_size)
@@ -56,20 +52,17 @@ def split_data_train_test(frame, train_size):
 
 
 def linear_regression_one_input(feature, train_labels):
-
-    normalizer = preprocessing.Normalization(input_shape=[1, ])
-    normalizer.adapt(feature)
-
     horsepower_model = tf.keras.Sequential([
-        normalizer,
-        tf.keras.layers.Dense(units=1)
-        # tf.keras.layers.Dense(units=1, input_shape=[1])
+        tf.keras.layers.Dense(units=1, input_shape=[1]),
+       # tf.keras.layers.Dense(64, activation='relu'),
+        #tf.keras.layers.Dense(64, activation='relu'),
+        #tf.keras.layers.Dense(1)
     ])
 
     horsepower_model.summary()
 
     horsepower_model.compile(
-        optimizer=tf.optimizers.Adam(learning_rate=0.1),
+        optimizer=tf.optimizers.Adam(learning_rate=0.2),
         loss='mean_absolute_error'
         # loss='mean_squared_error'
     )
@@ -79,7 +72,7 @@ def linear_regression_one_input(feature, train_labels):
 
     history = horsepower_model.fit(
         feature, train_labels,
-        epochs=100,
+        epochs=200,
         # suppress logging
         verbose=2,
         callbacks=tensorboard_callback,
@@ -89,17 +82,9 @@ def linear_regression_one_input(feature, train_labels):
 
 
 def load_data():
-    url = 'http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data'
-    column_names = ['MPG', 'Cylinders', 'Displacement', 'Horsepower', 'Weight',
-                    'Acceleration', 'Model Year', 'Origin']
+    data_frame = pd.read_csv('~/.data/Automobile_data.csv')
 
-    data_frame = pd.read_csv(url, names=column_names,
-                              na_values='?', comment='\t',
-                              sep=' ', skipinitialspace=True)
-
-    data_frame['Origin'] = data_frame['Origin'].map({1: 'USA', 2: 'Europe', 3: 'Japan'})
-    dataset = data_frame.dropna()
-    return data_frame  # replace_question_mark(data_frame)
+    return replace_question_mark(data_frame)
 
 # https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html#selection
 

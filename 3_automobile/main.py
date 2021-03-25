@@ -7,7 +7,7 @@ import tensorflow as tf
 import pandas as pd
 import seaborn as sns
 
-from automobile import load_data, split_data_train_test, linear_regression_one_input
+from automobile import load_data, split_data_train_test, linear_regression
 
 
 def plot_loss(history):
@@ -16,7 +16,7 @@ def plot_loss(history):
     plt.plot(history.history['val_loss'], label='val_loss')
     plt.ylim([0, 10000])
     plt.xlabel('Epoch')
-    plt.ylabel('Error [MPG]')
+    plt.ylabel('Error [price]')
     plt.legend()
     plt.grid(True)
     plt.show()
@@ -28,17 +28,16 @@ def plot_horsepower(training_x, training_y, x, y):
     plt.scatter(training_x, training_y, label='Data')
     plt.plot(x, y, color='k', label='Predictions')
     plt.xlabel('Horsepower')
-    plt.ylabel('MPG')
+    plt.ylabel('price')
     plt.legend()
     plt.show()
 
 
-if __name__ == "__main__":
+def linear_regression_one_input():
     data_frame = load_data()
     sns.heatmap(data_frame.corr(), annot=True)
     train_features, train_labels, test_features, test_labels = split_data_train_test(data_frame, train_size=0.8)
 
-    data_frame.columns
     hp_index = data_frame.columns.get_loc("horsepower")
 
     horsepower = train_features[:, hp_index]
@@ -46,7 +45,7 @@ if __name__ == "__main__":
 
     train_labels_1 = np.asarray(train_labels).astype(np.float32)
 
-    horsepower_model, history = linear_regression_one_input(horsepower, train_labels_1)
+    horsepower_model, history = linear_regression(horsepower, train_labels_1)
 
     plot_loss(history)
 
@@ -66,8 +65,15 @@ if __name__ == "__main__":
 
     plot_horsepower(horsepower, train_labels_1, x, y)
 
+    horsepower_model.save('saved_model/my_model')
+
     hist = pd.DataFrame(history.history)
     hist['epoch'] = history.epoch
     hist.tail()
+
+
+if __name__ == "__main__":
+    linear_regression_one_input()
+
 
 # e szerint is rossz: https://www.kaggle.com/vovanthuong/predict-automobile-price

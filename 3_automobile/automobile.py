@@ -7,25 +7,12 @@ import datetime
 
 
 def replace_question_mark(data):
-    df_temp = data[data['normalized-losses'] != '?']
-    normalised_mean = df_temp['normalized-losses'].astype(int).mean()
-    data['normalized-losses'] = data['normalized-losses'].replace('?', normalised_mean).astype(int)
+    column_to_fix = ['normalized-losses', 'horsepower', 'peak-rpm', 'bore', 'stroke']
 
-    df_temp = data[data['horsepower'] != '?']
-    normalised_mean = df_temp['horsepower'].astype(int).mean()
-    data['horsepower'] = data['horsepower'].replace('?', normalised_mean).astype(int)
-
-    df_temp = data[data['peak-rpm'] != '?']
-    normalised_mean = df_temp['peak-rpm'].astype(int).mean()
-    data['peak-rpm'] = data['peak-rpm'].replace('?', normalised_mean).astype(int)
-
-    df_temp = data[data['bore'] != '?']
-    normalised_mean = df_temp['bore'].astype(float).mean()
-    data['bore'] = data['bore'].replace('?', normalised_mean).astype(float)
-
-    df_temp = data[data['stroke'] != '?']
-    normalised_mean = df_temp['stroke'].astype(float).mean()
-    data['stroke'] = data['stroke'].replace('?', normalised_mean).astype(float)
+    for column_name in column_to_fix:
+        df_temp = data[data[column_name] != '?']
+        normalised_mean = df_temp[column_name].astype(np.float32).mean()
+        data[column_name] = data[column_name].replace('?', normalised_mean).astype(np.float32)
 
     data['num-of-doors'] = data['num-of-doors'].replace('?', 'four')
 
@@ -51,13 +38,21 @@ def split_data_train_test(frame, train_size):
     return train_x, train_y, test_x, test_y
 
 
-def linear_regression_one_input(feature, train_labels):
-    horsepower_model = tf.keras.Sequential([
-        tf.keras.layers.Dense(units=1, input_shape=[1]),
-       # tf.keras.layers.Dense(64, activation='relu'),
-        #tf.keras.layers.Dense(64, activation='relu'),
-        #tf.keras.layers.Dense(1)
-    ])
+def linear_regression(feature, train_labels):
+    input_number = 1 if len(feature.shape) == 1 else feature.shape[1]
+
+    if input_number == 1:
+        horsepower_model = tf.keras.Sequential([
+            tf.keras.layers.Dense(units=input_number, input_shape=[input_number]),
+        ])
+    else:
+        horsepower_model = tf.keras.Sequential([
+            tf.keras.layers.Dense(units=input_number, input_shape=[input_number]),
+            tf.keras.layers.Dense(64, activation='relu'),
+            tf.keras.layers.Dense(64, activation='relu'),
+            tf.keras.layers.Dense(1)
+        ])
+
 
     horsepower_model.summary()
 
@@ -68,7 +63,7 @@ def linear_regression_one_input(feature, train_labels):
     )
 
     log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1, profile_batch=(10, 15))
 
     history = horsepower_model.fit(
         feature, train_labels,

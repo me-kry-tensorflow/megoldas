@@ -1,4 +1,4 @@
-from src.from_cratch.perceptron import perceptron, predict, weights
+from perceptron import perceptron, predict, weights
 
 epochs = range(100000)
 

@@ -8,7 +8,6 @@ def plot_loss(history):
     plt.figure()
     plt.plot(history.history['loss'], label='loss')
     plt.plot(history.history['val_loss'], label='val_loss')
-    plt.ylim([0, 10])
     plt.xlabel('Epoch')
     plt.ylabel('Error')
     plt.legend()
@@ -16,12 +15,15 @@ def plot_loss(history):
     plt.show()
 
 
-def get_model():
-    model = tf.keras.Sequential([tf.keras.layers.Dense(units=1, input_shape=[1])])
-    model.compile(optimizer='sgd', loss='mean_squared_error')
-
+def get_data():
     xs = np.array([-1.0,  0.0, 1.0, 2.0, 3.0, 4.0], dtype=float)
     ys = np.array([-3.0, -1.0, 1.0, 3.0, 5.0, 7.0], dtype=float)
+    return xs, ys
+
+
+def get_model(xs, ys):
+    model = tf.keras.Sequential([tf.keras.layers.Dense(units=1, input_shape=[1])])
+    model.compile(optimizer='sgd', loss='mean_squared_error')
 
     log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
@@ -36,8 +38,9 @@ def predict(model, x):
 
 
 if __name__ == "__main__":
-    mymodel = get_model()
-    print(predict(mymodel, [10.0]))
+    xs, ys = get_data()
+    my_model = get_model(xs, ys)
+    print(predict(my_model, [10.0]))
 
 
 

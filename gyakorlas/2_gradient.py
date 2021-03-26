@@ -1,9 +1,7 @@
 import tensorflow as tf
 
 
-def calculate_gradient():
-    x = tf.Variable(3.0)
-
+def calculate_gradient(x):
     # https://docs.python.org/3/library/operator.html
     with tf.GradientTape() as tape:
         y = x**2  # pow(x, 2)
@@ -13,5 +11,6 @@ def calculate_gradient():
 
 
 if __name__ == "__main__":
-    dy_dx = calculate_gradient()
+    x = tf.Variable(3.0)
+    dy_dx = calculate_gradient(x)
     print(dy_dx.numpy())

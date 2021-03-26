@@ -3,7 +3,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 
 # https://stackoverflow.com/questions/57387485/how-to-choose-units-for-dense-in-tensorflow-keras
-# a retegek es azokban levo neuronok hiperparameterk
+# a retegek es azokban levo neuronok hiperparameterek
 # grid search vagy random search
 
 # https://machinelearningknowledge.ai/keras-dense-layer-explained-for-beginners/

@@ -5,11 +5,12 @@ import matplotlib.pyplot as plt
 
 
 def plot_loss(history):
+    plt.figure()
     plt.plot(history.history['loss'], label='loss')
     plt.plot(history.history['val_loss'], label='val_loss')
     plt.ylim([0, 10])
     plt.xlabel('Epoch')
-    plt.ylabel('Error [MPG]')
+    plt.ylabel('Error')
     plt.legend()
     plt.grid(True)
     plt.show()

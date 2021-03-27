@@ -1,5 +1,15 @@
 #Linearis regresszi sajat model osztallyal feladat
 
+# Általános leiras
+`Fit the Xs to the Ys and try 500 times`
+1. generálunk egy modellt (elején lehet teljesen véletlen is)
+2. a modellt használva meghatározzuk az eredményt
+3. eredmény érték mennyire jó: megmondja a loss függvény
+4. módosítjuk a súlyokat, generálunk egy újabb modellt, hogy jobb legyen (optimizer használata)
+5. mindaddig csináljuk, amíg elég közel nem kerülünk a megoldáshoz
+   Vagy el nem érjük a próbálkozás számot (epochs)
+
+
 ## globalis valtozok
 TRUE_W = 3.0
 TRUE_B = 2.0

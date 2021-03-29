@@ -49,7 +49,7 @@ def linear_regression_one_input():
 
     plot_loss(history)
 
-    horsepower_model.predict(horsepower[:10])
+    horsepower_model.predict(horsepower[:140])
 
     test_results = {}
 

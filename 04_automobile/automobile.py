@@ -27,7 +27,7 @@ def split_data_train_test(frame, train_size):
 
     data_frame_x = frame.drop('price', axis=1)
     x = np.array(data_frame_x)
-    data_frame_y = frame['price']
+    data_frame_y = frame['horsepower']
     y = np.array(data_frame_y)
 
     train_count = int(count * train_size)

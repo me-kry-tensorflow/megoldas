@@ -1,0 +1,11 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+start;
+repeat
+    :calculate label;
+    :calculate loss (expected, calculated);
+    :optimize the weights (W);
+repeat while (loss) is (not appropriate)
+->appropriate;
+stop;
+@enduml

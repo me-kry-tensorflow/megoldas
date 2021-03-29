@@ -1,0 +1,25 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_TOP_DOWN()
+'LAYOUT_AS_SKETCH()
+HIDE_STEREOTYPE()
+
+System_Boundary(c1, "algorith_inputs") {
+
+System_Ext(input1, "input1")
+System_Ext(input2, "input2")
+System(bias, "bias")
+}
+
+System(perceptor, "perceptor")
+
+System(prediction, "prediction")
+
+
+Rel(input1, perceptor, "W[0]")
+Rel(input2, perceptor, "W[1]")
+Rel(bias, perceptor, "W[2]")
+Rel(perceptor, prediction, "calculaion")
+
+@enduml

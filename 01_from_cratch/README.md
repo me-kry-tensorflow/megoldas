@@ -28,17 +28,13 @@ kell egy `bias` valtozo `1` ertekkel
 2. Toltsd fel veletlen ertekellel.
 3. 1. suly az elso bemenete, 2. a masodik menete, 3. a bias-e
 
-## `calculate` fuggveny
-1. Kell egy metodus, ami az adott sulyokkal szamolva visszaadja
+## `predict` fuggveny
+1. Kell egy fv, ami az adott sulyokkal szamolva visszaadja
 az adott erteket.
-2. A szamolt kimenet a bementek sulyoyott osszege + a sulyozott bias 
+1. ket parametere van, a ket feature parameter (input1, input2)
+2. A szamolt kimenet a bementek sulyozott osszege, ahol a bias is egy bemenet 
 3. Ezt a sulyozott kimenetet kell meg szurni a lepcso fuggvennyel. 
    0, ha kisebb, vagy egyenlo 0 az ertek, ha 0tol nagyobb, akkor 1
-
-## `predict` fuggveny
-1. ket parameter van: a ket szam (0 vagy 1)
-2. visszateresi ertek egy szam 1 vagy 0
-3. az elozo fv-t hasznalja
 
 ## `perceptron` fuggveny
 Hozz létre egy fv-t, ami 3 parametert kap
@@ -48,7 +44,7 @@ Hozz létre egy fv-t, ami 3 parametert kap
 * nincs visszateresi erteke
 
 Ez a betanito fv, amivel a neuronok bementi es bias sulyait fogja hangolni.
-1. Meghivja az aktualis bementekkel a `calculate` fv-t.
+1. Meghivja az aktualis bementekkel a `predict` fv-t.
 2. kiszamitja az elvart ertek es a kiszamolt ertek hibajat 
    (most hasznaljunk sima kulonbseget, eles kodban negyzetes kulonbseg vagy mas szokott lenni)
 3. aktualis suly = error * learning_rate * amit_sulyoz

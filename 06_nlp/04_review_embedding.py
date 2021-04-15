@@ -51,12 +51,12 @@ def exctract_model(weights, dictionary):
     vec_file = io.open('embedding_vectors.tsv', 'w', encoding='utf-8')
     meta_file = io.open('metadata.tsv', 'w', encoding='utf-8')
     index_based_embedding = dict([(value, key) for (key, value) in X_dict.items()])
-    for i in range(1, len(dictionary) - 1):
+    for i in range(1, word_number):
         word = index_based_embedding[i]
         embedding_weight_values = weights[i]
         meta_file.write(word + "\n")
         vec_file.write('\t'.join([str(x.numpy()) for x in embedding_weight_values]) + "\n")
-        print(str(i) + ' of ' + str(len(dictionary)) + '\n')
+        print(str(i) + ' of ' + str(word_number) + '\n')
     meta_file.close()
     vec_file.close()
 

@@ -7,7 +7,7 @@ sentences = [
 
 test_data = [
     'I love my dog',
-    'my dog love my cat',
+    'my dog love my little cat',
 ]
 
 # nem veszitunk elemet, mindig annyi elem lesz, amennyi a mintaban volt
@@ -16,6 +16,9 @@ tokenizer.fit_on_texts(sentences)
 word_index = tokenizer.word_index  # kerjuk a szotarat, szavak es azonositok
 
 sequences = tokenizer.texts_to_sequences(sentences)
+# az '<OOV>' indexe (1) meg fog jelenni a test_sequences, mert a test_databan van ismeretlen elem.
+# minden ismeretlen szo helyett az OOV indexe lesz.
+# jelentesbol veszitunk, de a numerikus reprezentacio nem serul
 test_sequences = tokenizer.texts_to_sequences(test_data)
 
 print(word_index)

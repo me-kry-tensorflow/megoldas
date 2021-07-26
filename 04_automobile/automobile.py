@@ -70,9 +70,10 @@ def linear_regression(feature, train_labels):
         epochs=200,
         # suppress logging
         verbose=2,
-        callbacks=tensorboard_callback,
+        callbacks=[tensorboard_callback],
         # Calculate validation results on 20% of the training data
-        validation_split=0.2)
+        validation_split=0.2,
+    )
     return horsepower_model, history
 
 

@@ -26,13 +26,18 @@ def plot_all_classes_images(train_images, class_names):
     plt.show()
 
 
+# Adatok importálása
+# Adatok szétválasztása
 fashion_mnist = keras.datasets.fashion_mnist
 (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
 plot_image(train_images[0])
 
+
+# Adatok átalakítása
 train_images = train_images / 255.0
 test_images = test_images / 255.0
 
+# Adat model létrehozása
 model = keras.Sequential([
     keras.layers.Flatten(input_shape=(28, 28)),  # 28x28 pixel images
     keras.layers.Dense(128, activation=tf.nn.relu),
@@ -41,19 +46,25 @@ model = keras.Sequential([
 
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics='accuracy')
 
+print(model.summary())
+
+# Model betanítása
 model.fit(train_images, train_labels, epochs=5)
 
 
 class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
                'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
 plot_all_classes_images(train_images, class_names)
+
+# Model ellenőrzése
 test_loss, test_acc = model.evaluate(test_images, test_labels)
 print('test_acc ', test_acc)
 
-img = (np.expand_dims(test_images[1], 0))
+img = (np.expand_dims(test_images[0], 0))
 prediction = model.predict(img)
 class_index = np.argmax(prediction)
-print('prediction of 1 test image is ' + class_names[class_index])
+print('prediction  ' + str(prediction))
+print('class name of prediction of 0 test image is ' + class_names[class_index])
 
 
 

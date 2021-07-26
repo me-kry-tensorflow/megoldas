@@ -12,6 +12,7 @@ test_data = [
     'my dog very love my beautiful cat',
 ]
 
+
 # nem veszitunk elemet, mindig annyi elem lesz, amennyi a mintaban volt
 tokenizer = Tokenizer(num_words=100, oov_token="<OOV>")  # maximalis szoszam, nem ismert uj elemek helyett '<OOV>' lesz
 tokenizer.fit_on_texts(sentences)
@@ -21,6 +22,9 @@ sequences = tokenizer.texts_to_sequences(sentences)
 test_sequences = tokenizer.texts_to_sequences(test_data)
 
 # a leghoszabb alapjan kiegesziti a rovideket alol 0-akkal
+# padding post a vegere irja a nullakak nem az elejere
+# maxlength megadja a maximalis hosszat
+# truncating post | pre, ha hosszabb a minta akkor levagja
 padded_test_data = pad_sequences(test_sequences)
 print(word_index)
 print('sequences ', sequences)

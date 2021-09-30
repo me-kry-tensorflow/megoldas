@@ -38,7 +38,7 @@ pip install -r requirements.txt
 python3 -m venv tf
 ```
 
-Ativáljuk az új irtuális környezetet!
+Ativáljuk az új virtuális környezetet!
 ```shell
 source tf/bin/activate
 ```
